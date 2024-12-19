@@ -5,21 +5,21 @@ from jinja2 import Template
 from tqdm import tqdm
 
 TOPSAPP_STEPS = ['startup',
-                 'preprocess',
-                 'computeBaselines',
-                 'verifyDEM',
-                 'topo',
-                 'subsetoverlaps',
-                 'coarseoffsets',
-                 'coarseresamp',
-                 'overlapifg', 'prepesd',
-                 'esd', 'rangecoreg',
-                 'fineoffsets', 'fineresamp', 'ion',
-                 'burstifg',
-                 'mergebursts',
-                 'filter', 'unwrap', 'unwrap2stage',
-                 'geocode', 'denseoffsets',
-                 'filteroffsets', 'geocodeoffsets']
+                  'preprocess',
+                  'computeBaselines',
+                  'verifyDEM',
+                  'topo',
+                  'subsetoverlaps',
+                  'coarseoffsets',
+                  'coarseresamp',
+                  'overlapifg', 'prepesd',
+                  'esd', 'rangecoreg',
+                  'fineoffsets', 'fineresamp', 'ion',
+                  'burstifg',
+                  'mergebursts',
+                  'filter', 'unwrap', 'unwrap2stage',
+                  'geocode', 'denseoffsets',
+                  'filteroffsets', 'geocodeoffsets']
 
 TEMPLATE_DIR = Path(__file__).parent/'templates'
 
@@ -48,7 +48,7 @@ def topsapp_processing(*,
                        output_resolution: int = 90,
                        do_dense_offsets: bool = False,
                        goldstein_filter_power: float = .5,
-                       ampcor_window_size: int = 64):
+                       ampcor_window_size: int = 32):
     swaths = swaths or [1, 2, 3]
     # for [ymin, ymax, xmin, xmax]
     extent_isce = [extent[k] for k in [1, 3, 0, 2]]
@@ -92,7 +92,7 @@ def topsapp_processing(*,
                                   do_dense_offsets=do_dense_offsets,
                                   goldstein_filter_power=goldstein_filter_power,
                                   ampcor_height=ampcor_window_size,
-                                  ampcor_width=ampcor_window_size
+                                  ampcor_width=ampcor_window_size*4
                                   )
     with open('topsApp.xml', "w") as file:
         file.write(topsApp_xml)

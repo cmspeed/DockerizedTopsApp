@@ -33,6 +33,9 @@ from isce2_topsapp.localize_slc import download_slcs, get_asf_slc_objects  # noq
 from isce2_topsapp.packaging import package_gunw_product  # noqa: E402
 from isce2_topsapp.topsapp_params import topsappParams  # noqa: E402
 from isce2_topsapp.topsapp_proc import topsapp_processing  # noqa: E402
+from isce2_topsapp.convert_offsets import convert_offsets  # noqa: E402
+from isce2_topsapp.convert_unwrapped import convert_unwrapped  # noqa: E402
+from isce2_topsapp.create_viz import create_viz_files  # noqa: E402
 
 
 try:
@@ -58,4 +61,7 @@ __all__ = [
     'package_gunw_product',
     'prepare_for_delivery',
     '__version__',
+    'convert_offsets',
+    'convert_unwrapped',
+    'create_viz_files'
 ]
