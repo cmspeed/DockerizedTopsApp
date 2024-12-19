@@ -37,7 +37,7 @@
         "azimuthPixelOffsets": {
                 "dst_group": "/science/grids/data",
                 "dst_variable": "azimuthPixelOffsets",
-                "input_relative_path": "merged/dense_offsets.bil.geo",
+                "input_relative_path": "merged/filt_dense_offsets_m.geo",
                 "src_band_number": 1,
                 "attrs": {
                         "standard_name": "azimuthPixelOffsets",
@@ -49,7 +49,7 @@
         "rangePixelOffsets": {
                 "dst_group": "/science/grids/data",
                 "dst_variable": "rangePixelOffsets",
-                "input_relative_path": "merged/dense_offsets.bil.geo",
+                "input_relative_path": "merged/filt_dense_offsets_m.geo",
                 "src_band_number": 2,
                 "attrs": {
                         "standard_name": "rangePixelOffsets",
