@@ -14,8 +14,6 @@ from pathlib import Path
 from platform import system
 from typing import Optional
 
-print(f"Current working directory: {os.getcwd()}")
-
 from isce2_topsapp import (BurstParams,
                            aws,
                            download_aux_cal,
