@@ -8,6 +8,7 @@ import requests
 S1A_AUX_URL = "https://sar-mpc.eu/files/S1A_AUX_CAL_20241128.zip"
 S1B_AUX_URL = "https://sar-mpc.eu/files/S1B_AUX_CAL_20241128.zip"
 
+
 def _download_platform(url: str, aux_cal_dir: Path):
     """Download and remove nested structure of the aux cal files
 
@@ -32,29 +33,4 @@ def download_aux_cal(aux_cal_dir: Union[str, Path] = "aux_cal"):
     for url in (S1A_AUX_URL, S1B_AUX_URL):
         _download_platform(url, aux_cal_dir)
 
-<<<<<<< Updated upstream
     return {"aux_cal_dir": str(aux_cal_dir)}
-=======
-    def download_one(url):
-        resp = requests.get(url)
-        file_name = url.split('/')[-1]
-        out_path = aux_cal_dir/file_name
-
-        with open(out_path, 'wb') as file:
-            file.write(resp.content)
-        return out_path
-
-    s1a_path = download_one(S1A_AUX_URL)
-    s1b_path = download_one(S1B_AUX_URL)
-
-    print(f"s1a_path: {s1a_path}")
-    print(f"s1b_path: {s1b_path}")
-
-    
-    with zipfile.ZipFile(s1a_path) as zip_file:
-        zip_file.extractall(aux_cal_dir)
-    with zipfile.ZipFile(s1b_path) as zip_file:
-        zip_file.extractall(aux_cal_dir)
-
-    return {'aux_cal_dir': str(aux_cal_dir)}
->>>>>>> Stashed changes
