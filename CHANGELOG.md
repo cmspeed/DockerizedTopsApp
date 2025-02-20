@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [PEP 440](https://www.python.org/dev/peps/pep-0440/)
 and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [0.4.0]
+
+### Changed
+* Use `s1_orbits` rather than `hyp3lib` to download Sentinel-1 orbits files in `localize_orbits.download_orbits`
+
+### Removed
+* ESA username/password requirement; these credentials are no longer needed to download Sentinel-1 orbit files.
+
 ## [0.3.7]
 * Updates dem-stitcher to 2.5.8 to ensure new (ARIA-managed) url for reading the Geoid EGM 2008. See this [issue](https://github.com/ACCESS-Cloud-Based-InSAR/dem-stitcher/issues/96).
 * Ensure version/docker build use python 3 as done here: https://github.com/dbekaert/RAiDER/blob/32697d2e4e6908b8feb3b81a1df30cb5f4e49a24/.github/workflows/build.yml#L16-L17

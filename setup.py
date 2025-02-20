@@ -36,7 +36,7 @@ setup(
         'dateparser',
         'dem_stitcher>=2.1',
         'geopandas',
-        'hyp3lib>=3,<4',
+        's1_orbits',
         'jinja2',
         'lxml',
         'matplotlib',
