@@ -34,6 +34,8 @@ GEOCODE_LIST_ION = ["merged/topophase.ion"]
 
 def iono_processing(
     *,
+    range_looks = 19,
+    azimuth_looks = 7,
     topsapp_xml_filename: str = 'topsApp.xml',
     mask_filename: str = '',
     correct_burst_ramps: bool = True,
@@ -135,12 +137,16 @@ def iono_processing(
 
         # Iono long wavelength
         merge_bursts(input_file="ion/ion_cal/filt.ion",
-                     output_filename="topophase.ion")
+                     output_filename="topophase.ion",
+                     range_looks=range_looks,
+                     azimuth_looks=azimuth_looks)
 
     else:
         # Create merged/topophase.ion file
         merge_bursts(input_file="ion/ion_cal/filt.ion",
-                     output_filename="topophase.ion")
+                     output_filename="topophase.ion",
+                     range_looks=range_looks,
+                     azimuth_looks=azimuth_looks)
 
     # Geocode ionospheric correction outputs
     topsapp.runGeocode(GEOCODE_LIST_ION, topsapp.do_unwrap,
@@ -187,14 +193,6 @@ def iono_processing(
 def mask_iono_ifg_bursts(tops_dir: Path,
                          mask_filename: Union[str, Path]) -> None:
     # Project mask to burst image coordinate space
-
-    print('========================================')
-    print('========================================')
-    print('========================================')
-    print(f'tops_dir: {tops_dir}')
-    print('========================================')
-    print('========================================')
-    print('========================================')
 
     def get_swath(x):
         return x.split("/")[-2]
@@ -260,8 +258,8 @@ def mask_iono_ifg_bursts(tops_dir: Path,
 def merge_bursts(
     input_file: str = "ion/ion_cal/filt.ion",
     output_filename: str = "topophase.ion",
-    range_looks: int = 7, #CMS changing to match 30m resolution of input data, will update to output_resolution (previously 19)
-    azimuth_looks: int = 3, #CMS changing to match 30m resolution of input data, will update to output_resolution (previously 7)
+    range_looks: int = 19,
+    azimuth_looks: int = 7,
     ion_rangeLooks: int = 200,
     ion_azimuthLooks: int = 50,
     mergedir: Union[str, Path] = "./merged",

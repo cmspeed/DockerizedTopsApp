@@ -430,7 +430,15 @@ def gunw_slc():
 
     # Run ionospheric correction
     if args.estimate_ionosphere_delay:
+        if args.output_resolution == 90:
+            range_looks = 19
+            azimuth_looks = 7
+        elif args.output_resolution == 30:
+            range_looks = 7
+            azimuth_looks = 3
         iono_attr = iono_processing(
+            range_looks=range_looks,
+            azimuth_looks=azimuth_looks,
             mask_filename=loc_data["water_mask"],
             correct_burst_ramps=True,
         )
@@ -504,15 +512,6 @@ def gunw_slc():
     footprint_dir = gunw_id_dir / "footprint"
     water_mask_path = isce_data_directory / "water_mask_derived_from_pekel_water_occurrence_2021_with_at_least_95_perc_water.geo"
 
-    print(f'isce_data_directory: {isce_data_directory}')
-    print(f'gunw_id: {gunw_id}')
-    print(f'gunw_id_dir: {gunw_id_dir}')
-    print(f'nc_file_path: {nc_file_path}')
-    print(f'cogs_dir: {cogs_dir}')
-    print(f'tiles_dir: {tiles_dir}')
-    print(f'footprint_dir: {footprint_dir}')
-    print(f'water_mask_path: {water_mask_path}')
-    
     try:
         create_viz_files(nc_file_path, cogs_dir, tiles_dir, footprint_dir, water_mask_path)
     except Exception as e:
