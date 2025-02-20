@@ -42,7 +42,7 @@
                 "attrs": {
                         "standard_name": "azimuthPixelOffsets",
                         "long_name": "azimuthPixelOffsets",
-                        "units": "meters",
+                        "units": "meter",
                         "description": "Azimuth pixel offsets measured through patch correlation."
                 }
         },
@@ -54,7 +54,7 @@
                 "attrs": {
                         "standard_name": "rangePixelOffsets",
                         "long_name": "rangePixelOffsets",
-                        "units": "meters",
+                        "units": "meter",
                         "description": "Range pixel offsets measured through patch correlation."
                 }
         }

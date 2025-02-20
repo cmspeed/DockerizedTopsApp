@@ -21,9 +21,9 @@ from isce2_topsapp.packaging_utils.ionosphere import (
 from isce2_topsapp.templates import read_netcdf_packaging_template
 from isce2_topsapp.water_mask import get_water_mask_raster_for_browse_image
 
-DATASET_VERSION = "3.0.1"
-STANDARD_PROD_PREFIX = "S1-GUNW"
-CUSTOM_PROD_PREFIX = "S1-GUNW_CUSTOM"
+DATASET_VERSION = "1.0.0"
+STANDARD_PROD_PREFIX = "S1-COSEIS_SAR"
+CUSTOM_PROD_PREFIX = "S1-COSEIS_SAR"
 
 
 """Warning: the packaging scripts were written as command line scripts and
@@ -461,92 +461,3 @@ def package_gunw_product(
         netcdf_path=out_nc_file, product_geometry_wkt=product_geometry_wkt
     )
     return out_nc_file
-
-### This is where to place the extract_layers_to_cog() function
-def extract_netcdf_to_cog_metadata(netcdf_path, output_dir):
-    """
-    Processes subdatasets in a netCDF file to generate GeoTIFFs retaining original values but 
-    with visualization metadata (color stretch and colormap).
-
-    Parameters:
-    - netcdf_path (str): Path to the netCDF file.
-    - output_dir (str): Directory to save the outputs.
-    """
-    with rasterio.open(netcdf_path) as dataset:
-        subdatasets = dataset.subdatasets
-
-    if not subdatasets:
-        print(f"No subdatasets found in {netcdf_path}")
-        return
-
-    rasters = ['azimuthPixelOffsets', 'rangePixelOffsets', 'unfilteredCoherence', 'amplitude', 'unwrappedPhase']
-
-    for raster in rasters:
-        subdataset_name = f"NETCDF:\"{netcdf_path}\":/science/grids/data/{raster}"
-        print(f"Processing layer: {raster}")
-
-        if raster == "unwrappedPhase":
-            with rasterio.open(subdataset_name) as src:
-                data = src.read(1)  # Read the first band
-                transform = src.transform
-                crs = src.crs
-                nodata_value = src.nodata
-
-                if nodata_value is not None:
-                    data = np.ma.masked_equal(data, nodata_value)
-
-                # Calculate 2nd and 98th percentiles for visualization
-                p2 = np.percentile(data.compressed(), 2)
-                p98 = np.percentile(data.compressed(), 98)
-                print(f"{raster}: p2 = {p2}, p98 = {p98}")
-
-                # Create a colormap from the percentile range
-                cmap = plt.get_cmap("RdBu")
-                norm = colors.Normalize(vmin=p2, vmax=p98)
-
-                # Create a color table for values within the percentile range
-                color_table = {
-                    i: tuple(int(c * 255) for c in cmap(norm(value))[:3]) + (255,)
-                    for i, value in enumerate(np.linspace(p2, p98, 256))
-                }
-
-                # Extend the color table to handle values outside the range
-                color_table[0] = tuple(int(c * 255) for c in cmap(0)[:3]) + (255,)  # Below p2
-                color_table[255] = tuple(int(c * 255) for c in cmap(1)[:3]) + (255,)  # Above p98
-
-                # Output GeoTIFF path
-                output_path = f"{output_dir}/{raster}_colorized_deflated_COG.tif"
-
-                # Write the GeoTIFF as a COG
-                with rasterio.open(
-                    output_path,
-                    "w",
-                    driver="GTiff",
-                    height=data.shape[0],
-                    width=data.shape[1],
-                    count=1,
-                    dtype="float32",  # Preserve original data values
-                    crs=crs,
-                    transform=transform,
-                    nodata=nodata_value,
-                    tiled=True,  # Enable tiling (required for COG)
-                    compress="DEFLATE",  # Use DEFLATE compression
-                    zlevel=9,  # Maximum compression level
-                    blockxsize=256,
-                    blockysize=256,
-                ) as dst:
-                    # Write the original data as float32
-                    dst.write(data.filled(nodata_value), 1)
-
-                    # Assign a color table (visualization only)
-                    dst.colorinterp = [ColorInterp.palette]
-                    dst.write_colormap(1, {i: color_table[i] for i in range(256)})
-
-                    # Add overviews for COG compliance
-                    overviews = [2, 4, 8, 16]  # Overview levels (can be adjusted)
-                    dst.build_overviews(overviews, resampling=rasterio.enums.Resampling.nearest)
-
-                    # Add COG-specific tags
-                    dst.update_tags(
-                        OVR_BLOCKSIZE=256  # Overview block size (COG requirement)
-                    )

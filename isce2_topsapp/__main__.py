@@ -14,6 +14,8 @@ from pathlib import Path
 from platform import system
 from typing import Optional
 
+print(f"Current working directory: {os.getcwd()}")
+
 from isce2_topsapp import (BurstParams,
                            aws,
                            download_aux_cal,
@@ -28,6 +30,7 @@ from isce2_topsapp import (BurstParams,
                            prepare_for_delivery,
                            topsappParams,
                            topsapp_processing,
+                           create_viz_files
                            )
 from isce2_topsapp.iono_proc import iono_processing
 from isce2_topsapp.json_encoder import MetadataEncoder
@@ -326,6 +329,53 @@ def convert_offsets(dense_offsets, amplitude, reference_xml):
     return
 
 
+def convert_unwrapped(unwrapped_pix):
+    # Open the input raster
+    unwrapped = gdal.Open(unwrapped_pix)
+
+    # Read the amplitude and phase arrays
+    amp_array = unwrapped.GetRasterBand(1).ReadAsArray()
+    phase_array = unwrapped.GetRasterBand(2).ReadAsArray()
+
+    # Convert phase to meters
+    phase_m = (phase_array * 0.05546576)/(4 * np.pi)
+   
+    # Write the converted arrays to a new raster
+    driver = gdal.GetDriverByName("ISCE")
+    outfile = "merged/filt_topophase_m.unw.geo"
+    vrtfile = "merged/filt_topophase_m.unw.geo.vrt"
+   
+    # Create the new raster
+    unwrapped_m = driver.Create(outfile, unwrapped.RasterXSize, unwrapped.RasterYSize, 2, gdal.GDT_Float32)
+   
+    # Get the raster bands
+    band1 = unwrapped_m.GetRasterBand(1)
+    band2 = unwrapped_m.GetRasterBand(2)
+   
+    # Set the NoData value for both bands before writing data
+    band1.SetNoDataValue(0)
+    band2.SetNoDataValue(0)
+   
+    # Write the amp_array to band 1 and phase_m to band 2
+    band1.WriteArray(amp_array)
+    band2.WriteArray(phase_m)
+
+    # Ensure georeferencing information is same as input
+    unwrapped_m.SetGeoTransform(unwrapped.GetGeoTransform())
+    unwrapped_m.SetProjection(unwrapped.GetProjection())
+
+    # Flush data to disk
+    band1.FlushCache()
+    band2.FlushCache()
+    unwrapped_m.FlushCache()
+    unwrapped_m = None 
+   
+    # Create a .vrt file
+    gdal.BuildVRT(vrtfile, [outfile])
+
+    return
+   
+
 def gunw_slc():
     cmd_line_str = 'isce2_topsapp ++' + ' '.join(sys.argv)
 
@@ -390,6 +440,9 @@ def gunw_slc():
     # Convert dense offsets to meters
     convert_offsets('merged/filt_dense_offsets.bil.geo', 'merged/filt_topophase.unw.geo', 'reference/IW2.xml')
 
+    # Convert unwrapped phase to meters
+    convert_unwrapped('merged/filt_topophase.unw.geo')
+
     additional_2d_layers_for_packaging = []
     additional_attributes_for_packaging = {}
     if args.estimate_ionosphere_delay:
@@ -443,6 +496,29 @@ def gunw_slc():
         for file in final_directory.glob("S1-GUNW*"):
             aws.upload_file_to_s3(file, args.bucket, args.bucket_prefix)
 
+    # Create visualization files
+    isce_data_directory = Path.cwd()
+    gunw_id = nc_path.stem
+    gunw_id_dir = isce_data_directory / gunw_id
+    nc_file_path = gunw_id_dir / f"{gunw_id}.nc"
+    cogs_dir = gunw_id_dir / "cogs"
+    tiles_dir = gunw_id_dir / "tiles"
+    footprint_dir = gunw_id_dir / "footprint"
+    water_mask_path = isce_data_directory / "water_mask_derived_from_pekel_water_occurrence_2021_with_at_least_95_perc_water.geo"
+
+    print(f'isce_data_directory: {isce_data_directory}')
+    print(f'gunw_id: {gunw_id}')
+    print(f'gunw_id_dir: {gunw_id_dir}')
+    print(f'nc_file_path: {nc_file_path}')
+    print(f'cogs_dir: {cogs_dir}')
+    print(f'tiles_dir: {tiles_dir}')
+    print(f'footprint_dir: {footprint_dir}')
+    print(f'water_mask_path: {water_mask_path}')
+    
+    try:
+        create_viz_files(nc_file_path, cogs_dir, tiles_dir, footprint_dir, water_mask_path)
+    except Exception as e:
+        print(f'Error creating visualization files: {e}')
 
 def gunw_burst():
     parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)

@@ -1,4 +1,4 @@
-name: topsapp_env
+name: topsapp_env2
 channels:
  - conda-forge
 dependencies:

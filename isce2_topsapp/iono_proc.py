@@ -188,6 +188,14 @@ def mask_iono_ifg_bursts(tops_dir: Path,
                          mask_filename: Union[str, Path]) -> None:
     # Project mask to burst image coordinate space
 
+    print('========================================')
+    print('========================================')
+    print('========================================')
+    print(f'tops_dir: {tops_dir}')
+    print('========================================')
+    print('========================================')
+    print('========================================')
+
     def get_swath(x):
         return x.split("/")[-2]
 
@@ -205,7 +213,13 @@ def mask_iono_ifg_bursts(tops_dir: Path,
                 f" /{get_burst(str(lat))}"
             )
 
-            lon = str(lat).replace("lat", "lon")
+            # Split the path into directory and filename
+            # This is workaround for directories with 'lat' in their path
+            dir_path, filename = os.path.split(str(lat))
+            lon_filename = filename.replace("lat", "lon")
+            lon = os.path.join(dir_path, lon_filename)
+            #lon = str(lat).replace("lat", "lon")
+
             # Get the swath and burst number
             swath = get_swath(str(lat))
             burst = get_burst(str(lat))
@@ -246,8 +260,8 @@ def mask_iono_ifg_bursts(tops_dir: Path,
 def merge_bursts(
     input_file: str = "ion/ion_cal/filt.ion",
     output_filename: str = "topophase.ion",
-    range_looks: int = 19,
-    azimuth_looks: int = 7,
+    range_looks: int = 7, #CMS changing to match 30m resolution of input data, will update to output_resolution (previously 19)
+    azimuth_looks: int = 3, #CMS changing to match 30m resolution of input data, will update to output_resolution (previously 7)
     ion_rangeLooks: int = 200,
     ion_azimuthLooks: int = 50,
     mergedir: Union[str, Path] = "./merged",
