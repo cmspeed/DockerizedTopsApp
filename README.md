@@ -45,12 +45,8 @@ echo "CONDA_SUBDIR: $CONDA_SUBDIR"  # Should print "CONDA_SUBDIR: osx-64"
     machine urs.earthdata.nasa.gov
         login <username>
         password <password>
-
-    machine dataspace.copernicus.eu
-        login <username>
-        password <password>
     ```
-    The first `username`/`password` pair are the appropriate Earthdata Login credentials that are used to access NASA data. The second pair are your credentials for the [Copernicus Data Space Ecosystem](https://dataspace.copernicus.eu). This file is necessary for downloading the Sentinel-1 files, and auxiliary data. Additionally, the [`requests`](https://docs.python-requests.org/en/latest/) library automatically uses credentials stored in the `~/.netrc` for authentification when none are supplied.
+    The `username`/`password` pair are the appropriate Earthdata Login credentials that are used to access NASA data. This file is necessary for downloading the Sentinel-1 files, and auxiliary data. Additionally, the [`requests`](https://docs.python-requests.org/en/latest/) library automatically uses credentials stored in the `~/.netrc` for authentification when none are supplied.
 
 ## Generate an ARIA-S1-GUNW
 
