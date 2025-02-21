@@ -3,6 +3,10 @@ from pathlib import Path
 from s1_orbits import fetch_for_scene
 
 
+def fetch_for_scene_kwargs(scene: str, orbit_dir: str, **kwargs):
+    return fetch_for_scene(scene, dir=orbit_dir)
+
+
 def download_orbits(
     reference_scenes: list, secondary_scenes: list, orbit_directory: str = 'orbits'
 ) -> dict:

@@ -14,6 +14,13 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Removed
 * ESA username/password requirement; these credentials are no longer needed to download Sentinel-1 orbit files.
 
+## [0.3.8]
+
+### Fixed
+* Aux cal files are now distributed from new locations and have nesting that must be removed. (See [PR](https://github.com/ASFHyP3/hyp3-isce2/pull/265/) from hyp3-isce2)
+
+>>>>>>> dev
+
 ## [0.3.7]
 * Updates dem-stitcher to 2.5.8 to ensure new (ARIA-managed) url for reading the Geoid EGM 2008. See this [issue](https://github.com/ACCESS-Cloud-Based-InSAR/dem-stitcher/issues/96).
 * Ensure version/docker build use python 3 as done here: https://github.com/dbekaert/RAiDER/blob/32697d2e4e6908b8feb3b81a1df30cb5f4e49a24/.github/workflows/build.yml#L16-L17
