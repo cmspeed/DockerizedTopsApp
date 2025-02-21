@@ -3,6 +3,7 @@ from pathlib import Path
 
 import requests
 from hyp3lib import get_orb
+from s1_orbits import fetch_for_scene
 
 
 def _spoof_orbit_download(
@@ -20,6 +21,10 @@ def _spoof_orbit_download(
     return None, None
 
 
+def fetch_for_scene_kwargs(scene: str, orbit_dir: str, **kwargs):
+    return fetch_for_scene(scene, dir=orbit_dir)
+
+
 def download_orbits(
     reference_scenes: list, secondary_scenes: list, orbit_directory: str = None, dry_run: bool = False
 ) -> dict:
@@ -29,7 +34,7 @@ def download_orbits(
     orbit_dir = Path(orbit_directory)
     orbit_dir.mkdir(exist_ok=True)
 
-    orbit_fetcher = _spoof_orbit_download if dry_run else get_orb.downloadSentinelOrbitFile
+    orbit_fetcher = _spoof_orbit_download if dry_run else fetch_for_scene_kwargs
 
     reference_orbits = []
     for scene in reference_scenes:
