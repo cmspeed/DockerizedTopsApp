@@ -19,7 +19,6 @@ and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 * Aux cal files are now distributed from new locations and have nesting that must be removed. (See [PR](https://github.com/ASFHyP3/hyp3-isce2/pull/265/) from hyp3-isce2)
 
->>>>>>> dev
 
 ## [0.3.7]
 * Updates dem-stitcher to 2.5.8 to ensure new (ARIA-managed) url for reading the Geoid EGM 2008. See this [issue](https://github.com/ACCESS-Cloud-Based-InSAR/dem-stitcher/issues/96).
