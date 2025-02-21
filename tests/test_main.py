@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from isce2_topsapp.__main__ import (
