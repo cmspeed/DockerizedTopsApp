@@ -16,7 +16,6 @@ dependencies:
  - fsspec
  - gdal
  - geopandas
- - hyp3lib>=3,<4
  - ipykernel
  - isce2==2.6.1
  - jinja2
@@ -46,3 +45,4 @@ dependencies:
  - dem_stitcher>=2.5.8
  - aiohttp  # only needed for manifest and swath download
  - tile_mate>=0.0.8
+ - s1_orbits
