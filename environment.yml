@@ -16,7 +16,6 @@ dependencies:
  - fsspec
  - gdal
  - geopandas
- - hyp3lib>=3,<4
  - ipykernel
  - isce2==2.6.1
  - jinja2

@@ -5,8 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [PEP 440](https://www.python.org/dev/peps/pep-0440/)
 and uses [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-## [0.3.9]
-* Use s1_orbits for downloading orbit data
+
+## [0.4.0]
+
+### Changed
+* Use `s1_orbits` rather than `hyp3lib` to download Sentinel-1 orbits files in `localize_orbits.download_orbits`
+
+### Removed
+* ESA username/password requirement; these credentials are no longer needed to download Sentinel-1 orbit files.
 
 ## [0.3.8]
 
